@@ -41,6 +41,29 @@ header p {
     font-size: 1.1rem;
     color: #8d99ae;
     font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.tutorial-btn {
+    background: transparent;
+    border: 2px solid #ef233c;
+    color: #ef233c;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tutorial-btn:hover {
+    background: #ef233c;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 35, 60, 0.2);
 }
 
 /* Main Content */

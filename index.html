@@ -11,7 +11,8 @@
     <div class="container">
         <header>
             <h1>Audio Classifier</h1>
-            <p>Classify audio using pre-trained Hugging Face models</p>
+            <p>AI-powered audio classification with pre-trained Hugging Face models</p>
+            <button class="tutorial-btn" onclick="showTutorial()">❓ How to Use</button>
         </header>
 
         <div class="main-content">
@@ -19,8 +20,9 @@
                 <h2>1. Load Model</h2>
                 <div class="load-content">
                     <div class="load-info">
-                        <p>Load a pre-trained audio classification model from Hugging Face.</p>
-                        <p>The model can classify various types of audio including speech, music, sound effects, and more.</p>
+                        <p>Load a pre-trained audio classification model from Hugging Face that can identify various types of audio content.</p>
+                        <p><strong>What it can classify:</strong> Speech, Music, Animal sounds, Human sounds, Vehicles, Nature sounds, Sound effects, and more.</p>
+                        <p><strong>Model:</strong> AST (Audio Spectrogram Transformer) trained on Google's AudioSet dataset with millions of audio samples.</p>
                     </div>
                     <button class="load-btn" id="loadModelBtn" onclick="loadModel()">
                         Load Model
@@ -35,7 +37,7 @@
             </div>
 
             <div class="phase" id="test-phase">
-                <h2>2. Test Classification</h2>
+                <h2>2. Test Audio Classification</h2>
                 <div class="test-content">
                     <div class="upload-test">
                         <div class="audio-selection-tabs">
@@ -48,7 +50,8 @@
                             <button class="upload-audio-btn" id="uploadAudioBtn" onclick="document.getElementById('audioFileInput').click()" disabled>
                                 📁 Upload Audio File
                             </button>
-                            <p class="upload-info">Supported formats: WAV, MP3, M4A, OGG, FLAC, AAC</p>
+                            <p class="upload-info"><strong>Supported formats:</strong> WAV, MP3, M4A, OGG, FLAC, AAC<br>
+                            <strong>Max size:</strong> 50MB | <strong>Processing:</strong> Client-side (your audio stays private)</p>
                         </div>
                         
                         <div class="presets-section" id="presets-section" style="display: none;">
@@ -89,7 +92,8 @@
                                     <button class="preset-play-btn" onclick="event.stopPropagation(); previewPresetAudio('water-splash-02-352021.mp3')">▶️</button>
                                 </div>
                             </div>
-                            <p class="upload-info">Click on any sample to classify it, or use the play button to preview</p>
+                            <p class="upload-info"><strong>How to use:</strong> Click ▶️ to preview any sample, or click anywhere on the card to classify it<br>
+                            <strong>Sample types:</strong> Animal sounds, Vehicle noises, Music, Nature sounds</p>
                         </div>
                         <div class="test-audio-info" id="testAudioInfo" style="display: none;">
                             <span>File loaded: <span id="fileName"></span> - Duration: <span id="testDuration">0s</span></span>
