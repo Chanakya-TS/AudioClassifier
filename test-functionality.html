@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Classifier - Test Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Classifier - Functionality Test</h1>
+        <p>Testing the Hugging Face integration</p>
+
+        <div class="test-section">
+            <h3>1. Model Loading Test</h3>
+            <button id="loadModelBtn" onclick="testModelLoading()">Load Hugging Face Model</button>
+            <div id="loadStatus"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Audio Context Test</h3>
+            <button id="audioTestBtn" onclick="testAudioContext()">Test Audio Context</button>
+            <div id="audioStatus"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Microphone Access Test</h3>
+            <button id="micTestBtn" onclick="testMicrophone()">Test Microphone Access</button>
+            <div id="micStatus"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Full Integration Test</h3>
+            <button id="integrationTestBtn" onclick="testFullIntegration()" disabled>Run Full Test</button>
+            <div id="integrationStatus"></div>
+        </div>
+    </div>
+
+    <script src="js/audio-context-manager.js"></script>
+    <script src="js/model-trainer.js"></script>
+    
+    <script>
+        async function testModelLoading() {
+            const status = document.getElementById('loadStatus');
+            const btn = document.getElementById('loadModelBtn');
+            
+            try {
+                status.className = 'status loading';
+                status.textContent = 'Loading Hugging Face model...';
+                btn.disabled = true;
+                
+                await modelTrainer.loadModel();
+                
+                status.className = 'status success';
+                status.textContent = '✅ Model loaded successfully! Classes: ' + modelTrainer.classes.join(', ');
+                
+                // Enable integration test
+                document.getElementById('integrationTestBtn').disabled = false;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ Model loading failed: ' + error.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        async function testAudioContext() {
+            const status = document.getElementById('audioStatus');
+            
+            try {
+                const audioContext = await audioContextManager.getAudioContext();
+                const sampleRate = audioContextManager.getSampleRate();
+                
+                status.className = 'status success';
+                status.textContent = `✅ Audio Context created successfully! Sample rate: ${sampleRate}Hz`;
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ Audio Context failed: ' + error.message;
+            }
+        }
+        
+        async function testMicrophone() {
+            const status = document.getElementById('micStatus');
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    } 
+                });
+                
+                status.className = 'status success';
+                status.textContent = '✅ Microphone access granted successfully!';
+                
+                // Clean up
+                stream.getTracks().forEach(track => track.stop());
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ Microphone access failed: ' + error.message;
+            }
+        }
+        
+        async function testFullIntegration() {
+            const status = document.getElementById('integrationStatus');
+            const btn = document.getElementById('integrationTestBtn');
+            
+            try {
+                status.className = 'status loading';
+                status.textContent = 'Running full integration test...';
+                btn.disabled = true;
+                
+                // Test if model is loaded
+                if (!modelTrainer.modelLoaded) {
+                    throw new Error('Model not loaded');
+                }
+                
+                // Test audio context
+                const audioContext = await audioContextManager.getAudioContext();
+                
+                // Create a simple test tone (1 second of 440Hz sine wave)
+                const sampleRate = audioContext.sampleRate;
+                const duration = 1.0;
+                const frequency = 440; // A4 note
+                
+                const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+                const channelData = buffer.getChannelData(0);
+                
+                for (let i = 0; i < channelData.length; i++) {
+                    channelData[i] = Math.sin(2 * Math.PI * frequency * i / sampleRate) * 0.3;
+                }
+                
+                // Test prediction with the generated tone
+                const predictions = await modelTrainer.predict(buffer);
+                
+                status.className = 'status success';
+                status.textContent = '✅ Full integration test passed! Predictions: ' + 
+                    predictions.map((p, i) => `${modelTrainer.classes[i]}: ${Math.round(p * 100)}%`).join(', ');
+                
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = '❌ Integration test failed: ' + error.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        console.log('Audio Classifier Test Page Ready');
+    </script>
+</body>
+</html>

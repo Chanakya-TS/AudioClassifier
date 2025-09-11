@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .upload-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            text-align: center;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .file-info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f4ff;
+            border-radius: 5px;
+            display: none;
+        }
+        .predictions {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .prediction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .prediction-bar {
+            flex: 1;
+            margin: 0 10px;
+            height: 20px;
+            background: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .prediction-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Upload Test</h1>
+        <p style="text-align: center; color: #666;">Test audio file upload and classification</p>
+
+        <div class="upload-section">
+            <h3>1. Load Model First</h3>
+            <button id="loadModelBtn" onclick="loadModel()">Load Hugging Face Model</button>
+            <div id="loadStatus"></div>
+        </div>
+
+        <div class="upload-section">
+            <h3>2. Upload Audio File</h3>
+            <input type="file" id="audioFileInput" accept=".wav,.mp3,.m4a,.ogg,.flac,.aac" onchange="handleAudioUpload(this)" disabled style="display: none;">
+            <button id="uploadBtn" onclick="document.getElementById('audioFileInput').click()" disabled>
+                📁 Upload Audio File
+            </button>
+            <p style="color: #666; font-size: 14px;">Supported: WAV, MP3, M4A, OGG, FLAC, AAC</p>
+            
+            <div class="file-info" id="fileInfo">
+                <p><strong>File:</strong> <span id="fileName"></span></p>
+                <p><strong>Duration:</strong> <span id="fileDuration"></span></p>
+                <button id="playBtn" onclick="playAudio()">▶️ Play</button>
+            </div>
+        </div>
+
+        <div class="predictions" id="predictions">
+            <p>Upload an audio file to see classification results</p>
+        </div>
+    </div>
+
+    <script src="js/audio-context-manager.js"></script>
+    <script src="js/model-trainer.js"></script>
+    <script src="js/live-inference.js"></script>
+
+    <script>
+        async function loadModel() {
+            const status = document.getElementById('loadStatus');
+            const btn = document.getElementById('loadModelBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInput = document.getElementById('audioFileInput');
+            
+            try {
+                status.style.color = '#0c5460';
+                status.textContent = 'Loading model...';
+                btn.disabled = true;
+                
+                await modelTrainer.loadModel();
+                
+                status.style.color = '#155724';
+                status.textContent = '✅ Model loaded successfully!';
+                
+                uploadBtn.disabled = false;
+                fileInput.disabled = false;
+                
+            } catch (error) {
+                status.style.color = '#721c24';
+                status.textContent = '❌ Error: ' + error.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        
+        function handleAudioUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                console.log('File selected:', file.name, file.type, (file.size / 1024 / 1024).toFixed(2) + 'MB');
+                
+                // Update file info display
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileInfo').style.display = 'block';
+                
+                // Process with the audio uploader
+                audioUploader.handleFileUpload(file);
+            }
+        }
+        
+        function playAudio() {
+            audioUploader.playTestAudio();
+        }
+        
+        // Override the display predictions to show in our test interface
+        const originalDisplayPredictions = audioUploader.displayPredictions;
+        audioUploader.displayPredictions = function(predictions) {
+            const container = document.getElementById('predictions');
+            container.innerHTML = '<h4>Classification Results:</h4>';
+            
+            const maxPrediction = Math.max(...predictions);
+            
+            predictions.forEach((confidence, index) => {
+                const className = modelTrainer.classes[index] || `Class ${index + 1}`;
+                const percentage = Math.round(confidence * 100);
+                
+                const item = document.createElement('div');
+                item.className = 'prediction-item';
+                
+                item.innerHTML = `
+                    <span style="min-width: 150px;">${className}</span>
+                    <div class="prediction-bar">
+                        <div class="prediction-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <span style="min-width: 50px; text-align: right;">${percentage}%</span>
+                `;
+                
+                if (confidence === maxPrediction && confidence > 0.1) {
+                    item.style.backgroundColor = '#e6f7ff';
+                    item.style.borderLeft = '4px solid #667eea';
+                    item.style.paddingLeft = '10px';
+                }
+                
+                container.appendChild(item);
+            });
+            
+            // Also update duration
+            if (this.testDuration) {
+                document.getElementById('fileDuration').textContent = this.testDuration.toFixed(2) + 's';
+            }
+        };
+        
+        console.log('Audio Upload Test Ready');
+    </script>
+</body>
+</html>

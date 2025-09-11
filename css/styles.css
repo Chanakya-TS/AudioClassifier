@@ -1,0 +1,530 @@
+/* Modern Minimalist Audio Classifier */
+/* Color Palette: Dark Navy #2b2d42, Blue Gray #8d99ae, Light Gray #edf2f4, Red #ef233c, Dark Red #d90429 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #edf2f4 0%, #d4e2e8 100%);
+    min-height: 100vh;
+    color: #2b2d42;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2b2d42;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #8d99ae;
+    font-weight: 400;
+}
+
+.main-content {
+    display: grid;
+    gap: 2rem;
+}
+
+.phase {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(43, 45, 66, 0.08);
+    border: 1px solid rgba(237, 242, 244, 0.6);
+    transition: all 0.3s ease;
+}
+
+.phase:hover {
+    box-shadow: 0 8px 30px rgba(43, 45, 66, 0.12);
+    transform: translateY(-2px);
+}
+
+.phase h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2b2d42;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Load Content */
+.load-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.load-info {
+    color: #8d99ae;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.load-info p {
+    margin-bottom: 0.8rem;
+}
+
+/* Buttons */
+.load-btn, .upload-audio-btn {
+    background: #ef233c;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    min-height: 48px;
+}
+
+.load-btn:hover:not(:disabled), 
+.upload-audio-btn:hover:not(:disabled) {
+    background: #d90429;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 35, 60, 0.3);
+}
+
+.load-btn:disabled, 
+.upload-audio-btn:disabled {
+    background: #8d99ae;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Upload Section */
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+
+.upload-info {
+    font-size: 0.9rem;
+    color: #8d99ae;
+    margin-top: 0.5rem;
+}
+
+/* Test Audio Info */
+.test-audio-info {
+    background: #f8f9ff;
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1rem 0;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e8ecf0;
+}
+
+.test-play-btn {
+    background: #2b2d42;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.test-play-btn:hover {
+    background: #1a1c2e;
+    transform: translateY(-1px);
+}
+
+.samples-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.sample-item {
+    background: #e6fffa;
+    color: #234e52;
+    border: 1px solid #b2f5ea;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sample-play, .sample-remove {
+    background: none;
+    border: none;
+    color: #4a5568;
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    padding: 2px;
+    margin-left: 4px;
+}
+
+.sample-play:hover, .sample-remove:hover {
+    opacity: 1;
+}
+
+.sample-play {
+    color: #38a169;
+}
+
+.sample-play:hover {
+    color: #2f855a;
+}
+
+.add-class-btn {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    padding: 16px 24px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.add-class-btn:hover {
+    background: #edf2f7;
+    border-color: #a0aec0;
+    color: #2d3748;
+}
+
+.train-content {
+    text-align: center;
+}
+
+.train-info p {
+    margin-bottom: 20px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.training-requirements {
+    background: #f0fff4;
+    border: 1px solid #c6f6d5;
+    border-radius: 6px;
+    padding: 16px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.training-requirements p {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.training-requirements ul {
+    list-style-position: inside;
+    color: #666;
+}
+
+.train-btn {
+    background: #ed8936;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 32px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin: 24px 0;
+}
+
+.train-btn:enabled:hover {
+    background: #dd6b20;
+}
+
+.train-btn:disabled {
+    background: #e2e8f0;
+    color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.training-progress {
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4299e1;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.training-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.stat {
+    flex: 1;
+}
+
+.stat label {
+    display: block;
+    font-weight: 500;
+    color: #718096;
+    font-size: 0.875rem;
+}
+
+.stat span {
+    font-size: 1.25rem;
+    color: #4299e1;
+    font-weight: 600;
+}
+
+.test-content {
+    text-align: center;
+}
+
+.test-record-btn {
+    background: #48bb78;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 32px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-bottom: 16px;
+}
+
+.test-record-btn:enabled:hover {
+    background: #38a169;
+}
+
+.test-record-btn.recording {
+    background: #e53e3e;
+    animation: pulse 1.5s infinite;
+}
+
+.test-record-btn.recording:hover {
+    background: #c53030;
+}
+
+.test-audio-info {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    color: #4a5568;
+}
+
+.test-play-btn {
+    background: #3182ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background 0.2s ease;
+}
+
+.test-play-btn:hover {
+    background: #2c5282;
+}
+
+.test-btn:disabled {
+    background: #e2e8f0;
+    color: #a0aec0;
+    cursor: not-allowed;
+}
+
+.audio-visualizer {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+#audioCanvas {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #f7fafc;
+}
+
+.predictions {
+    margin: 20px 0;
+}
+
+.prediction-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    padding: 12px;
+    background: #f7fafc;
+    border-radius: 6px;
+}
+
+.prediction-label {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.prediction-bar {
+    flex: 2;
+    height: 16px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 12px;
+}
+
+.prediction-fill {
+    height: 100%;
+    background: #4299e1;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+}
+
+.prediction-value {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 600;
+    color: #4299e1;
+    font-size: 0.875rem;
+}
+
+.export-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.export-section h3 {
+    color: #2d3748;
+    margin-bottom: 16px;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.export-options {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.export-btn {
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.export-btn:enabled:hover {
+    background: #4f46e5;
+}
+
+.export-btn:disabled {
+    background: #e2e8f0;
+    color: #a0aec0;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    header h1 {
+        font-size: 2.25rem;
+    }
+    
+    .container {
+        padding: 16px;
+    }
+    
+    .phase {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .record-section {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .export-options {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .training-stats {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .phase {
+        padding: 20px;
+    }
+}

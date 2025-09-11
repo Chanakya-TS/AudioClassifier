@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Classifier</title>
+    <link rel="stylesheet" href="css/styles-modern.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Audio Classifier</h1>
+            <p>Classify audio using pre-trained Hugging Face models</p>
+        </header>
+
+        <div class="main-content">
+            <div class="phase" id="load-phase">
+                <h2>1. Load Model</h2>
+                <div class="load-content">
+                    <div class="load-info">
+                        <p>Load a pre-trained audio classification model from Hugging Face.</p>
+                        <p>The model can classify various types of audio including speech, music, sound effects, and more.</p>
+                    </div>
+                    <button class="load-btn" id="loadModelBtn" onclick="loadModel()">
+                        Load Model
+                    </button>
+                    <div class="loading-progress" id="loadingProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%; animation: pulse 2s infinite;"></div>
+                        </div>
+                        <p>Loading Hugging Face model...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase" id="test-phase">
+                <h2>2. Test Classification</h2>
+                <div class="test-content">
+                    <div class="upload-test">
+                        <div class="audio-selection-tabs">
+                            <button class="tab-btn active" onclick="switchTab('upload')">📁 Upload File</button>
+                            <button class="tab-btn" onclick="switchTab('presets')">🎵 Sample Sounds</button>
+                        </div>
+                        
+                        <div class="upload-section" id="upload-section">
+                            <input type="file" id="audioFileInput" accept=".wav,.mp3,.m4a,.ogg,.flac,.aac" onchange="handleAudioUpload(this)" disabled style="display: none;">
+                            <button class="upload-audio-btn" id="uploadAudioBtn" onclick="document.getElementById('audioFileInput').click()" disabled>
+                                📁 Upload Audio File
+                            </button>
+                            <p class="upload-info">Supported formats: WAV, MP3, M4A, OGG, FLAC, AAC</p>
+                        </div>
+                        
+                        <div class="presets-section" id="presets-section" style="display: none;">
+                            <div class="presets-grid">
+                                <div class="preset-item" onclick="selectPresetAudio('barking-large-and-small-dog-290711.mp3', 'Dog Barking')">
+                                    <div class="preset-icon">🐕</div>
+                                    <div class="preset-info">
+                                        <h4>Dog Barking</h4>
+                                        <p>Large and small dog sounds</p>
+                                    </div>
+                                    <button class="preset-play-btn" onclick="event.stopPropagation(); previewPresetAudio('barking-large-and-small-dog-290711.mp3')">▶️</button>
+                                </div>
+                                
+                                <div class="preset-item" onclick="selectPresetAudio('car-engine-372477.mp3', 'Car Engine')">
+                                    <div class="preset-icon">🚗</div>
+                                    <div class="preset-info">
+                                        <h4>Car Engine</h4>
+                                        <p>Vehicle engine sound</p>
+                                    </div>
+                                    <button class="preset-play-btn" onclick="event.stopPropagation(); previewPresetAudio('car-engine-372477.mp3')">▶️</button>
+                                </div>
+                                
+                                <div class="preset-item" onclick="selectPresetAudio('sax-jazz-77053.mp3', 'Jazz Saxophone')">
+                                    <div class="preset-icon">🎷</div>
+                                    <div class="preset-info">
+                                        <h4>Jazz Saxophone</h4>
+                                        <p>Smooth jazz music</p>
+                                    </div>
+                                    <button class="preset-play-btn" onclick="event.stopPropagation(); previewPresetAudio('sax-jazz-77053.mp3')">▶️</button>
+                                </div>
+                                
+                                <div class="preset-item" onclick="selectPresetAudio('water-splash-02-352021.mp3', 'Water Splash')">
+                                    <div class="preset-icon">💧</div>
+                                    <div class="preset-info">
+                                        <h4>Water Splash</h4>
+                                        <p>Water sound effect</p>
+                                    </div>
+                                    <button class="preset-play-btn" onclick="event.stopPropagation(); previewPresetAudio('water-splash-02-352021.mp3')">▶️</button>
+                                </div>
+                            </div>
+                            <p class="upload-info">Click on any sample to classify it, or use the play button to preview</p>
+                        </div>
+                        <div class="test-audio-info" id="testAudioInfo" style="display: none;">
+                            <span>File loaded: <span id="fileName"></span> - Duration: <span id="testDuration">0s</span></span>
+                            <button class="test-play-btn" id="testPlayBtn" onclick="playTestAudio()">▶️ Play</button>
+                        </div>
+                        <div class="predictions" id="predictions">
+                            <p>Upload an audio file to see classification results</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/audio-context-manager.js"></script>
+    <script src="js/model-trainer.js"></script>
+    <script src="js/live-inference.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
