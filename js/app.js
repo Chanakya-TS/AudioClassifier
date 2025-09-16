@@ -38,6 +38,7 @@ function showTutorial() {
             <h3 style="color: #2b2d42; font-size: 1.1em; margin-bottom: 10px;">🎯 2. Choose Audio Source</h3>
             <ul style="color: #666; line-height: 1.5; font-size: 0.9em; margin: 0; padding-left: 20px;">
                 <li><strong>📁 Upload File:</strong> WAV, MP3, M4A, OGG, FLAC, AAC</li>
+                <li><strong>🎤 Record Audio:</strong> Live microphone recording</li>
                 <li><strong>🎵 Sample Sounds:</strong> Try preset examples</li>
                 <li>Click ▶️ to preview, click card to classify</li>
             </ul>

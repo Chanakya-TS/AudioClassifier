@@ -115,7 +115,7 @@ header p {
 }
 
 /* Buttons */
-.load-btn, .upload-audio-btn {
+.load-btn, .upload-audio-btn, .record-audio-btn {
     background: #ef233c;
     color: white;
     border: none;
@@ -133,15 +133,17 @@ header p {
     min-height: 48px;
 }
 
-.load-btn:hover:not(:disabled), 
-.upload-audio-btn:hover:not(:disabled) {
+.load-btn:hover:not(:disabled),
+.upload-audio-btn:hover:not(:disabled),
+.record-audio-btn:hover:not(:disabled) {
     background: #d90429;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(239, 35, 60, 0.3);
 }
 
-.load-btn:disabled, 
-.upload-audio-btn:disabled {
+.load-btn:disabled,
+.upload-audio-btn:disabled,
+.record-audio-btn:disabled {
     background: #8d99ae;
     cursor: not-allowed;
     transform: none;
@@ -161,6 +163,70 @@ header p {
     font-size: 0.9rem;
     color: #8d99ae;
     margin-top: 0.5rem;
+}
+
+/* Record Section */
+.record-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    text-align: center;
+}
+
+.recording-status {
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    background: #f8f9ff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px dashed #ef233c;
+}
+
+.recording-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #ef233c;
+}
+
+.recording-dot {
+    width: 12px;
+    height: 12px;
+    background: #ef233c;
+    border-radius: 50%;
+    animation: recording-pulse 1s ease-in-out infinite;
+}
+
+@keyframes recording-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.2);
+    }
+}
+
+.stop-recording-btn {
+    background: #2b2d42;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.stop-recording-btn:hover {
+    background: #1a1c2e;
+    transform: translateY(-1px);
 }
 
 /* Test Audio Info */

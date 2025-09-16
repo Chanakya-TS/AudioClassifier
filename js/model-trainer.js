@@ -208,12 +208,16 @@ class ModelTrainer {
     enableTesting() {
         const uploadBtn = document.getElementById('uploadAudioBtn');
         const fileInput = document.getElementById('audioFileInput');
-        
+        const recordBtn = document.getElementById('recordAudioBtn');
+
         if (uploadBtn) {
             uploadBtn.disabled = false;
         }
         if (fileInput) {
             fileInput.disabled = false;
+        }
+        if (recordBtn) {
+            recordBtn.disabled = false;
         }
     }
 
